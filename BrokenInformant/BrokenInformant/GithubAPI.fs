@@ -20,42 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-open System.IO
-open GithubAPI
+module GithubAPI
+    open System
 
-/// Traverses the specified folder and returns a seq with all files under that folder.
-let rec allFilesUnder folder =
-    seq {
-        yield! Directory.GetFiles(folder)
-        for subDirectory in Directory.GetDirectories(folder) do
-            yield! allFilesUnder subDirectory
-    }
+    type GithubPersonalToken = string
 
-let listCommand () = 
-    //TODO(#3): Implement list command that lists all unreported TODOs within current directory.
-    failwith "List not implemented"
+    let readGithubCredentials () : GithubPersonalToken option =
+        let credentials = System.Environment.GetEnvironmentVariable("BROKENINFORMANT_CREDENTIALS")
 
-let reportCommand () =
-    //TODO(#4): Implement report command to perform reporting of issues to Github.
-    failwith "Report not implemented"
-
-let usage () = 
-    //TODO(#6): Implement usage help command for invalid or wrong passed command line arguments.
-    failwith "Usage not implemented"
-
-[<EntryPoint>]
-let main argv = 
-    //TODO: If this returns None, we should exit.
-    let credentials = GithubAPI.readGithubCredentials()
-
-    if argv.Length = 1 then
-        match argv with
-        | [|"list"|] ->
-            listCommand()
-        | [|"report"|] ->
-            reportCommand()
-        | _ -> usage()
-    else
-        usage()
-
-    0
+        if (credentials = null) then
+            printf "No credentials could be found.\nDo you want to add your Github credentials? (y/n) "
+            let response = Console.ReadLine()
+            match response.ToLower().[0] with
+            | 'y' -> 
+                printf "Personal Token: "
+                let token = Console.ReadLine()
+                System.Environment.SetEnvironmentVariable("BROKENINFORMANT_CREDENTIALS", token)
+                Some(System.Environment.GetEnvironmentVariable("BROKENINFORMANT_CREDENTIALS"))
+            | _ -> None
+        else 
+            Some credentials
