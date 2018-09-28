@@ -31,15 +31,15 @@ let rec allFilesUnder folder =
     }
 
 let listCommand () = 
-    //TODO: Implement list command that lists all unreported TODOs within current directory.
+    //TODO(#3): Implement list command that lists all unreported TODOs within current directory.
     failwith "List not implemented"
 
 let reportCommand () =
-    //TODO: Implement report command to perform reporting of issues to Github.
+    //TODO(#4): Implement report command to perform reporting of issues to Github.
     failwith "Report not implemented"
 
 let usage () = 
-    //TODO: Implement usage help command for invalid or wrong passed command line arguments.
+    //TODO(#6): Implement usage help command for invalid or wrong passed command line arguments.
     failwith "Usage not implemented"
 
 [<EntryPoint>]
