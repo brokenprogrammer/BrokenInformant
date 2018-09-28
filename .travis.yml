@@ -1,4 +1,3 @@
 language: csharp
-solution: BrokenInformant.sln
-before_script:
-  - nuget restore BrokenInformant.sln
+solution: ./BrokenInformant/BrokenInformant.sln
+install: nuget restore ./BrokenInformant/BrokenInformant.sln
