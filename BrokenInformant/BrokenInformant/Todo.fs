@@ -18,18 +18,25 @@
         if m.Success then Some(List.tail [for g in m.Groups -> g.Value])
         else None
 
+    
+    /// Pattern matches specified line against the format of a Unreported TODO
+    /// returns a unreported TODO if successfull match; None otherwise.
     let lineToUnreportedTodo line =
         let regex = """^(.*)TODO: (.*)$"""
         match line with
         | Regex regex [prefix; suffix] -> Some(Todo.Unreported prefix suffix)
         | _ -> None
 
+    /// Pattern matches specified line against the format of a Reported TODO
+    /// returns a reported TODO if successfull match; None otherwise.
     let lineToReportedTodo line =
         let regex = """^(.*)TODO\((.*)\): (.*)$"""
         match line with
         | Regex regex [prefix; id; suffix] -> Some(Todo.Reported prefix id suffix)
         | _ -> None
 
+    /// Determines if the specified line is either a reported, unreported TODO or neither
+    /// returns either a TODO or None.
     let lineToTodo lineNumber line = 
         let unreported = lineToUnreportedTodo line
         
@@ -42,7 +49,7 @@
             | None -> None
 
 
-    /// Walks every line within specified file and returns TODO: what?
+    /// Walks every line within specified file and returns seq of Todos
     let todosInFile file =
         File.ReadLines(file)
         |> Seq.mapi lineToTodo
