@@ -20,6 +20,16 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+open System.IO
+
+/// Traverses the specified folder and returns a seq with all files under that folder.
+let rec allFilesUnder folder =
+    seq {
+        yield! Directory.GetFiles(folder)
+        for subDirectory in Directory.GetDirectories(folder) do
+            yield! allFilesUnder subDirectory
+    }
+
 let listCommand () = 
     //TODO: Implement list command that lists all unreported TODOs within current directory.
     failwith "List not implemented"
