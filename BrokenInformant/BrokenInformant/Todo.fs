@@ -30,21 +30,21 @@
         | Regex regex [prefix; id; suffix] -> Some(Todo.Reported prefix id suffix)
         | _ -> None
 
-    let lineToTodo line = 
+    let lineToTodo lineNumber line = 
         let unreported = lineToUnreportedTodo line
         
         match unreported with
-        | Some x -> Some x
+        | Some x -> Some( { x with line = lineNumber+1 } )
         | None -> 
             let reported = lineToReportedTodo line
             match reported with
-            | Some x -> Some x
+            | Some x -> Some( { x with line = lineNumber+1 } )
             | None -> None
 
 
     /// Walks every line within specified file and returns TODO: what?
-    //TODO: Populate record with fileName and line number.
     let todosInFile file =
-        File.ReadLines(file) 
-        |> Seq.map lineToTodo 
+        File.ReadLines(file)
+        |> Seq.mapi lineToTodo
         |> Seq.choose id
+        |> Seq.map (fun x -> {x with fileName = file})
