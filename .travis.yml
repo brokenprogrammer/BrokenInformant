@@ -1,0 +1,3 @@
+language: csharp
+solution: ./BrokenInformant/BrokenInformant.sln
+install: nuget restore ./BrokenInformant/BrokenInformant.sln
