@@ -31,10 +31,20 @@
         | _ -> None
 
     let lineToTodo line = 
-        failwith "Not implemented"
+        let unreported = lineToUnreportedTodo line
+        
+        match unreported with
+        | Some x -> Some x
+        | None -> 
+            let reported = lineToReportedTodo line
+            match reported with
+            | Some x -> Some x
+            | None -> None
+
 
     /// Walks every line within specified file and returns TODO: what?
+    //TODO: Populate record with fileName and line number.
     let todosInFile file =
         File.ReadLines(file) 
         |> Seq.map lineToTodo 
-        |> Seq.choose id //TODO: 
+        |> Seq.choose id
