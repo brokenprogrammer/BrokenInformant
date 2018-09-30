@@ -34,10 +34,10 @@ let rec allFilesUnder folder =
     }
 
 let listCommand () = 
-    //TODO(#3): Implement list command that lists all unreported TODOs within current directory.
     let files = allFilesUnder (System.Environment.CurrentDirectory)
     let todos = todosInFiles files
     for todo in todos do
+        //TODO: Strip unnecessary part of file path when printing.
         printfn "%s" (todo.ToString())
     ()
 
