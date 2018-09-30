@@ -21,7 +21,7 @@
 // SOFTWARE.
 
 open System.IO
-open GithubAPI
+open Github
 
 /// Traverses the specified folder and returns a seq with all files under that folder.
 let rec allFilesUnder folder =
@@ -45,7 +45,7 @@ let usage () =
 
 [<EntryPoint>]
 let main argv =
-    let credentials = GithubAPI.readGithubCredentials()
+    let credentials = Github.readGithubCredentials()
     match credentials with 
     | Some x -> ()
     | None -> 
