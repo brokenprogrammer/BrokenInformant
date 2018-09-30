@@ -21,6 +21,7 @@
 // SOFTWARE.
 
 open System.IO
+open Github
 
 /// Traverses the specified folder and returns a seq with all files under that folder.
 let rec allFilesUnder folder =
@@ -43,7 +44,13 @@ let usage () =
     failwith "Usage not implemented"
 
 [<EntryPoint>]
-let main argv = 
+let main argv =
+    let credentials = Github.readGithubCredentials()
+    match credentials with 
+    | Some x -> ()
+    | None -> 
+        printf "No Github credentials was loaded. Exiting...\n"
+        exit 1
 
     if argv.Length = 1 then
         match argv with
