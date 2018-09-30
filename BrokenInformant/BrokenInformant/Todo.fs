@@ -31,7 +31,13 @@ module Todo
         suffix : string
         fileName : string
         line : int
-    } with
+    } 
+    with
+        override x.ToString() = match x.id with
+                                | Some id -> 
+                                    sprintf "%s:%d: %sTODO(%s): %s" x.fileName x.line x.prefix id x.suffix
+                                | None -> 
+                                    sprintf "%s:%d: %sTODO: %s" x.fileName x.line x.prefix x.suffix
         static member Unreported prefix suffix = {prefix = prefix; id = None; suffix = suffix; fileName = ""; line = 0}
         static member Reported prefix id suffix = {prefix = prefix; id = Some id; suffix = suffix; fileName = ""; line = 0} 
 
@@ -70,10 +76,17 @@ module Todo
             | Some x -> Some( { x with line = lineNumber+1 } )
             | None -> None
 
-
-    /// Walks every line within specified file and returns seq of Todos
+    /// Walks every line within specified file and returns seq of TODOs
     let todosInFile file =
         File.ReadLines(file)
         |> Seq.mapi lineToTodo
         |> Seq.choose id
         |> Seq.map (fun x -> {x with fileName = file})
+
+    // Walks every file specified, collects all its TODOs and returns a seq with all TODOs
+    // within all the given files.
+    let todosInFiles files =
+        seq {
+            for file in files do
+                yield! todosInFile file
+        }
