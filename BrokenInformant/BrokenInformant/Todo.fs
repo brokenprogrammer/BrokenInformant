@@ -39,7 +39,7 @@ module Todo
                                 | None -> 
                                     sprintf "%s:%d: %sTODO: %s" x.fileName x.line x.prefix x.suffix
         static member Unreported prefix suffix = {prefix = prefix; id = None; suffix = suffix; fileName = ""; line = 0}
-        static member Reported prefix id suffix = {prefix = prefix; id = Some id; suffix = suffix; fileName = ""; line = 0} 
+        static member Reported prefix id suffix = { Todo.Unreported prefix suffix with id = Some id } 
 
     let (|Regex|_|) pattern input =
         let m = Regex.Match(input, pattern)
