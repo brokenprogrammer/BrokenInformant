@@ -25,6 +25,7 @@ module GithubAPI
 
     type GithubPersonalToken = string
 
+    //TODO: Change from using environment variables to configurations file
     let readGithubCredentials () : GithubPersonalToken option =
         let credentials = System.Environment.GetEnvironmentVariable("BROKENINFORMANT_CREDENTIALS")
 

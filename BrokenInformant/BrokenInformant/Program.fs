@@ -44,9 +44,13 @@ let usage () =
     failwith "Usage not implemented"
 
 [<EntryPoint>]
-let main argv = 
-    //TODO: If this returns None, we should exit.
+let main argv =
     let credentials = GithubAPI.readGithubCredentials()
+    match credentials with 
+    | Some x -> ()
+    | None -> 
+        printf "No Github credentials was loaded. Exiting...\n"
+        exit 1
 
     if argv.Length = 1 then
         match argv with
