@@ -49,11 +49,6 @@ module Github
         open Newtonsoft.Json
         open Newtonsoft.Json.Linq
 
-        //let setHeaders token req =
-            //req
-            //|> Request.setHeader(Authorization (sprintf "token %s" token))
-            //|> Request.setHeader(ContentType <| ContentType.create ("application", "json"))
-
         let postIssue (credentials : GithubPersonalToken) (repo : string) (todo : Todo) =
             async {
                 let body = new JObject(new JProperty("title", todo.suffix),
