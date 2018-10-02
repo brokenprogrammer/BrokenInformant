@@ -62,10 +62,10 @@ module Github
 
                 let client = new HttpClient()
                 client.DefaultRequestHeaders.Add("User-Agent", "Anything");
-                client.DefaultRequestHeaders.Add("Authorization", (sprintf "token %s" credentials));
-                let httpContent = new StringContent(bodyString, Encoding.UTF8, "application/json");
-                let! reponse = client.PostAsync("https://api.github.com/repos/"+repo+"/issues", httpContent)
+                client.DefaultRequestHeaders.Add("Authorization", (sprintf "token %s" credentials))
+                let httpContent = new StringContent(bodyString, Encoding.UTF8, "application/json")
+                let! response = client.PostAsync("https://api.github.com/repos/"+repo+"/issues", httpContent) |> Async.AwaitTask
 
                 //TODO: Retrieve returned issue and add id to the todo
-
+                ()
             } |> Async.RunSynchronously
