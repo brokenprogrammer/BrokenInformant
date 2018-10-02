@@ -22,6 +22,7 @@
 
 module Github
     open System
+    open Todo
 
     type GithubPersonalToken = string
 
@@ -41,3 +42,30 @@ module Github
             | _ -> None
         else 
             Some credentials
+    
+    module API =
+        open System.Text
+        open System.Net.Http
+        open Newtonsoft.Json
+        open Newtonsoft.Json.Linq
+
+        //let setHeaders token req =
+            //req
+            //|> Request.setHeader(Authorization (sprintf "token %s" token))
+            //|> Request.setHeader(ContentType <| ContentType.create ("application", "json"))
+
+        let postIssue (credentials : GithubPersonalToken) (repo : string) (todo : Todo) =
+            async {
+                let body = new JObject(new JProperty("title", todo.suffix),
+                                        new JProperty("body", ""))
+                let bodyString = body.ToString()
+
+                let client = new HttpClient()
+                client.DefaultRequestHeaders.Add("User-Agent", "Anything");
+                client.DefaultRequestHeaders.Add("Authorization", (sprintf "token %s" credentials));
+                let httpContent = new StringContent(bodyString, Encoding.UTF8, "application/json");
+                let! reponse = client.PostAsync("https://api.github.com/repos/"+repo+"/issues", httpContent)
+
+                //TODO: Retrieve returned issue and add id to the todo
+
+            } |> Async.RunSynchronously
