@@ -47,9 +47,8 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
     let todos = todosInFiles files
 
     let test = Todo.Unreported "" "Test Issue from BrokenInformant"
-    API.postIssue credentials repo test
+    let newTodo = API.postIssue credentials repo test
 
-    printf "%s" repo
     ()
 
 let usage () = 

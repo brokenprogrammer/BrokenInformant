@@ -49,7 +49,10 @@ module Github
         open Newtonsoft.Json
         open Newtonsoft.Json.Linq
 
-        let postIssue (credentials : GithubPersonalToken) (repo : string) (todo : Todo) =
+        /// Takes a github personal token, a target repo and a todo to report and submits
+        /// the given todo as an issue to the specified github repo.
+        /// Returns the given TODO but with it's ID field populated with the newly assigned ID.
+        let postIssue (credentials : GithubPersonalToken) (repo : string) (todo : Todo) : Todo =
             async {
                 let body = new JObject(new JProperty("title", todo.suffix),
                                         new JProperty("body", ""))
@@ -60,7 +63,10 @@ module Github
                 client.DefaultRequestHeaders.Add("Authorization", (sprintf "token %s" credentials))
                 let httpContent = new StringContent(bodyString, Encoding.UTF8, "application/json")
                 let! response = client.PostAsync("https://api.github.com/repos/"+repo+"/issues", httpContent) |> Async.AwaitTask
+                response.EnsureSuccessStatusCode() |> ignore
 
-                //TODO: Retrieve returned issue and add id to the todo
-                ()
+                let! jsonResponse = response.Content.ReadAsStringAsync() |> Async.AwaitTask
+                let todoId = JObject.Parse(jsonResponse).["number"].Value<int>()
+
+                return {todo with id = Some (sprintf "#%d" todoId)}
             } |> Async.RunSynchronously
