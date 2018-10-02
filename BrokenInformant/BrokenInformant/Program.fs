@@ -20,8 +20,10 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
+open System
 open System.IO
 open Github
+open Todo
 
 /// Traverses the specified folder and returns a seq with all files under that folder.
 let rec allFilesUnder folder =
@@ -32,8 +34,12 @@ let rec allFilesUnder folder =
     }
 
 let listCommand () = 
-    //TODO(#3): Implement list command that lists all unreported TODOs within current directory.
-    failwith "List not implemented"
+    let files = allFilesUnder (System.Environment.CurrentDirectory)
+    let todos = todosInFiles files
+    for todo in todos do
+        //TODO: Strip unnecessary part of file path when printing.
+        printfn "%s" (todo.ToString())
+    ()
 
 let reportCommand () =
     //TODO(#4): Implement report command to perform reporting of issues to Github.
