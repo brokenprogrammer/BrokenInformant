@@ -41,9 +41,15 @@ let listCommand () =
         printfn "%s" (todo.ToString())
     ()
 
-let reportCommand () =
+let reportCommand (credentials : GithubPersonalToken)(repo : string) =
     //TODO(#4): Implement report command to perform reporting of issues to Github.
-    failwith "Report not implemented"
+    let files = allFilesUnder (System.Environment.CurrentDirectory)
+    let todos = todosInFiles files
+
+    let test = Todo.Unreported "" "Test Issue from BrokenInformant"
+    let newTodo = API.postIssue credentials repo test
+
+    ()
 
 let usage () = 
     //TODO(#6): Implement usage help command for invalid or wrong passed command line arguments.
@@ -51,19 +57,19 @@ let usage () =
 
 [<EntryPoint>]
 let main argv =
-    let credentials = Github.readGithubCredentials()
-    match credentials with 
-    | Some x -> ()
-    | None -> 
-        printf "No Github credentials was loaded. Exiting...\n"
-        exit 1
+    let token = Github.readGithubCredentials()
+    let credentials = match token with 
+                      | Some x -> x
+                      | None -> 
+                        printf "No Github credentials was loaded. Exiting...\n"
+                        exit 1
 
-    if argv.Length = 1 then
+    if argv.Length > 1 then
         match argv with
         | [|"list"|] ->
             listCommand()
-        | [|"report"|] ->
-            reportCommand()
+        | [|"report"; repo|] ->
+            reportCommand credentials repo
         | _ -> usage()
     else
         usage()

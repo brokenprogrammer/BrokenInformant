@@ -22,6 +22,7 @@
 
 module Github
     open System
+    open Todo
 
     type GithubPersonalToken = string
 
@@ -41,3 +42,31 @@ module Github
             | _ -> None
         else 
             Some credentials
+    
+    module API =
+        open System.Text
+        open System.Net.Http
+        open Newtonsoft.Json
+        open Newtonsoft.Json.Linq
+
+        /// Takes a github personal token, a target repo and a todo to report and submits
+        /// the given todo as an issue to the specified github repo.
+        /// Returns the given TODO but with it's ID field populated with the newly assigned ID.
+        let postIssue (credentials : GithubPersonalToken) (repo : string) (todo : Todo) : Todo =
+            async {
+                let body = new JObject(new JProperty("title", todo.suffix),
+                                        new JProperty("body", ""))
+                let bodyString = body.ToString()
+
+                let client = new HttpClient()
+                client.DefaultRequestHeaders.Add("User-Agent", "Anything");
+                client.DefaultRequestHeaders.Add("Authorization", (sprintf "token %s" credentials))
+                let httpContent = new StringContent(bodyString, Encoding.UTF8, "application/json")
+                let! response = client.PostAsync("https://api.github.com/repos/"+repo+"/issues", httpContent) |> Async.AwaitTask
+                response.EnsureSuccessStatusCode() |> ignore
+
+                let! jsonResponse = response.Content.ReadAsStringAsync() |> Async.AwaitTask
+                let todoId = JObject.Parse(jsonResponse).["number"].Value<int>()
+
+                return {todo with id = Some (sprintf "#%d" todoId)}
+            } |> Async.RunSynchronously
