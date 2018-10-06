@@ -64,7 +64,7 @@ let main argv =
                         printf "No Github credentials was loaded. Exiting...\n"
                         exit 1
 
-    if argv.Length > 1 then
+    if argv.Length >= 1 then
         match argv with
         | [|"list"|] ->
             listCommand()
