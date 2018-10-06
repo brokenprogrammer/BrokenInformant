@@ -52,8 +52,10 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
     ()
 
 let usage () = 
-    //TODO(#6): Implement usage help command for invalid or wrong passed command line arguments.
-    failwith "Usage not implemented"
+    printf "Usage: %s%s%s"
+            "BrokenInformant [option]\n"
+            "\tlist: Lists all the TODOs in the current directory.\n"
+            "\treport <owner/repo>: Reports all the TODOs in the directory.\n"
 
 [<EntryPoint>]
 let main argv =
