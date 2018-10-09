@@ -46,8 +46,23 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
     let files = allFilesUnder (System.Environment.CurrentDirectory)
     let todos = todosInFiles files
 
-    let test = Todo.Unreported "" "Test Issue from BrokenInformant"
-    let newTodo = API.postIssue credentials repo test
+    let todosToReport = seq {
+        for todo in todos do 
+            if todo.id.IsNone then
+                printf "%s\n" (todo.ToString())
+                printf "%s" "Do you want to report this? (y/n) "
+                let response = Console.ReadLine()
+                if response.ToLower().[0] = 'y' then
+                    yield todo
+    }
+
+    for todo in todosToReport do
+        let reportedTodo = API.postIssue credentials repo todo
+
+        printf "%s%s" "Reported: " (reportedTodo.ToString())
+
+        //TODO: Update TODO id in file.
+        //TODO: Add git add & commit for updated file with TODO id.
 
     ()
 
