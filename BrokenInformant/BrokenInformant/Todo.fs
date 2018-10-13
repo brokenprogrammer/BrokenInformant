@@ -46,7 +46,17 @@ module Todo
         if m.Success then Some(List.tail [for g in m.Groups -> g.Value])
         else None
 
-    
+    let getCommitMessage todo = 
+        match todo.id with
+        | Some x -> sprintf "TODO(%s)" x
+        | None -> "TODO"
+
+    let updateTodoInFile todo = 
+        //TODO: Create new file and for every line in original file copy that line to the new file, once TODO's line 
+            // number is reached we copy the new TODO line into the file. When finished copying the file we rename it to the original filename.
+
+        ()
+
     /// Pattern matches specified line against the format of a Unreported TODO
     /// returns a unreported TODO if successfull match; None otherwise.
     let lineToUnreportedTodo line =

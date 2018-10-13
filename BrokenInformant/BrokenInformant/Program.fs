@@ -61,9 +61,12 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
 
         printf "%s%s" "Reported: " (reportedTodo.ToString())
 
-        //TODO: Update TODO id in file.
-        //TODO: Add git add & commit for updated file with TODO id.
-
+        //TODO(#25): Update TODO id in file.
+        updateTodoInFile reportedTodo
+        
+        //TODO(#26): Add git add & commit for updated file with TODO id.
+        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git add %s" reportedTodo.fileName))
+        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git commit -m %s" (getCommitMessage reportedTodo)))
     ()
 
 let usage () = 
