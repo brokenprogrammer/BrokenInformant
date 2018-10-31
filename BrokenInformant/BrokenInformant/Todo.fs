@@ -1,4 +1,4 @@
-﻿// MIT License
+// MIT License
 // 
 // Copyright (c) 2018 Oskar Mendel
 // 
@@ -56,7 +56,7 @@ module Todo
         | Some x -> sprintf "TODO(%s)" x
         | None -> "TODO"
 
-    //TODO: Document this function.
+    //TODO(#48): Document this function.
     let updateTodoInFile todo = 
         let inputFileContents = File.ReadAllLines(todo.fileName)
         let outputFileContents = [| for i in 0 .. (inputFileContents.Length - 1) do 
