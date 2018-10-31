@@ -24,7 +24,7 @@ module Todo
     open System
     open System.IO
     open System.Text.RegularExpressions
-
+    
     type Todo = {
         prefix : string
         id : string option
@@ -38,6 +38,11 @@ module Todo
                                     sprintf "%s:%d: %sTODO(%s): %s" x.fileName x.line x.prefix id x.suffix
                                 | None -> 
                                     sprintf "%s:%d: %sTODO: %s" x.fileName x.line x.prefix x.suffix
+        member x.Output() = match x.id with
+                            | Some id -> 
+                                sprintf "%sTODO(%s): %s" x.prefix id x.suffix
+                            | None ->
+                                sprintf "%sTODO: %s" x.prefix x.suffix
         static member Unreported prefix suffix = {prefix = prefix; id = None; suffix = suffix; fileName = ""; line = 0}
         static member Reported prefix id suffix = { Todo.Unreported prefix suffix with id = Some id } 
 
@@ -51,10 +56,16 @@ module Todo
         | Some x -> sprintf "TODO(%s)" x
         | None -> "TODO"
 
+    //TODO: Document this function.
     let updateTodoInFile todo = 
-        //TODO: Create new file and for every line in original file copy that line to the new file, once TODO's line 
-            // number is reached we copy the new TODO line into the file. When finished copying the file we rename it to the original filename.
-
+        let inputFileContents = File.ReadAllLines(todo.fileName)
+        let outputFileContents = [| for i in 0 .. (inputFileContents.Length - 1) do 
+                                    if i = (todo.line - 1) then
+                                        yield todo.Output()
+                                    else 
+                                        yield inputFileContents.[i]
+                                 |]
+        File.WriteAllLines(todo.fileName, outputFileContents)
         ()
 
     /// Pattern matches specified line against the format of a Unreported TODO
@@ -88,7 +99,7 @@ module Todo
 
     /// Walks every line within specified file and returns seq of TODOs
     let todosInFile file =
-        File.ReadLines(file)
+        File.ReadAllLines(file)
         |> Seq.mapi lineToTodo
         |> Seq.choose id
         |> Seq.map (fun x -> {x with fileName = file})
