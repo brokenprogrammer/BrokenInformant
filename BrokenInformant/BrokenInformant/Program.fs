@@ -64,10 +64,8 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
         //TODO(#25): Update TODO id in file.
         updateTodoInFile reportedTodo
         
-        //TODO(#26): Add git add & commit for updated file with TODO id.
-        //TODO(#47): Fix warning, Result of Diagnostics.Process is implicitly ignored.
-        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git add %s" reportedTodo.fileName))
-        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git commit -m %s" (getCommitMessage reportedTodo)))
+        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git add %s" reportedTodo.fileName)) |> ignore
+        System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git commit -m %s" (getCommitMessage reportedTodo))) |> ignore
     ()
 
 let usage () = 
