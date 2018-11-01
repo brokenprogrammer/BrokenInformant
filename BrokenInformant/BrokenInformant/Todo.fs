@@ -25,6 +25,10 @@ module Todo
     open System.IO
     open System.Text.RegularExpressions
     
+    let shortenFilePath (filePath : string) : string =
+        let currentDirectory = System.Environment.CurrentDirectory;
+        filePath.Replace(currentDirectory, "")
+
     type Todo = {
         prefix : string
         id : string option
@@ -35,9 +39,9 @@ module Todo
     with
         override x.ToString() = match x.id with
                                 | Some id -> 
-                                    sprintf "%s:%d: %sTODO(%s): %s" x.fileName x.line x.prefix id x.suffix
+                                    sprintf "%s:%d: \t%sTODO(%s): %s" (shortenFilePath x.fileName) x.line (x.prefix.Trim()) id (x.suffix.Trim())
                                 | None -> 
-                                    sprintf "%s:%d: %sTODO: %s" x.fileName x.line x.prefix x.suffix
+                                    sprintf "%s:%d: \t%sTODO: %s" (shortenFilePath x.fileName) x.line (x.prefix.Trim()) (x.suffix.Trim())
         member x.Output() = match x.id with
                             | Some id -> 
                                 sprintf "%sTODO(%s): %s" x.prefix id x.suffix
@@ -55,7 +59,7 @@ module Todo
         match todo.id with
         | Some x -> sprintf "TODO(%s)" x
         | None -> "TODO"
-
+    
     /// Reads a TODO's file and then outputs all its content but the line of the TODO and 
     /// instead of the original line yields the contents of the TODO.
     let updateTodoInFile todo = 
