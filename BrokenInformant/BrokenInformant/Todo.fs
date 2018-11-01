@@ -56,7 +56,8 @@ module Todo
         | Some x -> sprintf "TODO(%s)" x
         | None -> "TODO"
 
-    //TODO(#48): Document this function.
+    /// Reads a TODO's file and then outputs all its content but the line of the TODO and 
+    /// instead of the original line yields the contents of the TODO.
     let updateTodoInFile todo = 
         let inputFileContents = File.ReadAllLines(todo.fileName)
         let outputFileContents = [| for i in 0 .. (inputFileContents.Length - 1) do 
