@@ -37,12 +37,10 @@ let listCommand () =
     let files = allFilesUnder (System.Environment.CurrentDirectory)
     let todos = todosInFiles files
     for todo in todos do
-        //TODO(#15): Strip unnecessary part of file path when printing.
         printfn "%s" (todo.ToString())
     ()
 
 let reportCommand (credentials : GithubPersonalToken)(repo : string) =
-    //TODO(#4): Implement report command to perform reporting of issues to Github.
     let files = allFilesUnder (System.Environment.CurrentDirectory)
     let todos = todosInFiles files
 
@@ -60,11 +58,9 @@ let reportCommand (credentials : GithubPersonalToken)(repo : string) =
         let reportedTodo = API.postIssue credentials repo todo
 
         printf "%s%s" "Reported: " (reportedTodo.ToString())
-
-        //TODO(#25): Update TODO id in file.
+        
         updateTodoInFile reportedTodo
         
-        //TODO(#26): Add git add & commit for updated file with TODO id.
         //TODO(#47): Fix warning, Result of Diagnostics.Process is implicitly ignored.
         System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git add %s" reportedTodo.fileName))
         System.Diagnostics.Process.Start("cmd.exe", (sprintf "/C git commit -m %s" (getCommitMessage reportedTodo)))
